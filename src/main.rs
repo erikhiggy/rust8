@@ -8,6 +8,10 @@ fn main() {
 
     let mut chip8 = Chip8::new();
     chip8.load_rom(&data);
+
+    loop {
+        chip8.run_instruction()
+    }
 }
 
 const NUM_GPR: usize = 16;
@@ -24,31 +28,50 @@ struct Cpu {
     reg_i: u16,
 
     // 2 special purpose 8 bit registers
-    reg_sp: [u8; NUM_SP],
+    // reg_sp: [u8; NUM_SP],
 
     // 16 bit program counter
     reg_pc: u16,
 
     // 8 bit stack pointer
-    reg_stack_pointer: u8
+    // reg_stack_pointer: u8
+}
+
+impl Cpu {
+    fn new() -> Cpu {
+        Cpu {
+            reg_gpr: [0; 16],
+            reg_i: 0,
+            reg_pc: PROGRAM_START_ADDR,
+        }
+    }
+
+    pub fn run_instruction(&mut self, ram: &mut Ram) {
+
+    }
 }
 
 struct Chip8 {
-    ram: Ram
+    ram: Ram,
+    cpu: Cpu
 }
 
 impl Chip8 {
     fn new() -> Chip8 {
         Chip8 {
-            ram: Ram::new()
+            ram: Ram::new(),
+            cpu: Cpu::new()
         }
     }
 
     pub fn load_rom(&mut self, data: &Vec<u8>) {
-        let offset = PROGRAM_START_ADDR;
         for i in 0..data.len() {
-            self.ram.write_byte(offset + i as u16, data[i]);
+            self.ram.write_byte(PROGRAM_START_ADDR + i as u16, data[i]);
         }
+    }
+
+    pub fn run_instruction(&mut self) {
+        self.cpu.run_instruction(&mut self.ram);
     }
 }
 
@@ -88,7 +111,7 @@ impl Ram {
                 i += 1;
             }
         }
-        println!("RAM: {:?}", ram.memory);
+
         ram
     }
 
@@ -99,8 +122,4 @@ impl Ram {
     pub fn write_byte(&mut self, addr: u16, value: u8) {
         self.memory[addr as usize] = value;
     }
-}
-
-impl Cpu {
-    // TODO
 }
