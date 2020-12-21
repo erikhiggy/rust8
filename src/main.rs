@@ -47,7 +47,13 @@ impl Cpu {
     }
 
     pub fn run_instruction(&mut self, ram: &mut Ram) {
-
+        // each instr is 2 bytes long, stored most SIGNIFICANT BYTE FIRST --> Big Endian
+        let hi = ram.read_byte(self.reg_pc) as u16;
+        let lo = ram.read_byte(self.reg_pc+1) as u16;
+        let instruction: u16 = (hi << 8) | lo;
+        println!("Instruction read: {:#X}: hi:{:#X} lo:{:#X}", instruction, hi, lo);
+        // increment the PC by 2 after each instruction
+        self.reg_pc += 2;
     }
 }
 
