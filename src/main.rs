@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::Read;
-use std::ops::Deref;
 use rand::Rng;
 
 fn main() {
@@ -41,7 +40,17 @@ struct Cpu {
     sp: u8,
 
     // stack
-    stack: [u8; 16]
+    stack: [u8; 16],
+
+    // 8 bit graphics (gfx) array
+    gfx: [u8; 64 * 32],
+
+    // draw flag
+    draw_flag: bool,
+
+    // keyboard handling
+    key: [u8; 16]
+
 }
 
 impl Cpu {
@@ -53,7 +62,10 @@ impl Cpu {
             sp: 0,
             stack: [0; 16],
             reg_dt: 0,
-            reg_st: 0
+            reg_st: 0,
+            gfx: [0; 64 * 32],
+            draw_flag: false,
+            key: [0; 16]
         }
     }
 
@@ -69,10 +81,12 @@ impl Cpu {
         let nn = instruction & 0x00FF;
         let reg_v0 = self.reg_gpr[0];
         let mut reg_vf = self.reg_gpr[0x000F];
+
         match instruction & 0xF000 {
             0x0000 => match instruction & 0x000F {
                 0x0000 => {
                     // 0x00E0: clear screen
+                    // TODO: figure out how to clear screen
                 },
                 0x000E => {
                     // 0x00EE: return from subroutine
@@ -221,17 +235,41 @@ impl Cpu {
             0xD000 => {
                 // 0xDXYN: draws a sprite at coordinate (VX, VY), has a width of 8 pixels and
                 // a height of N + 1 pixels.
-                // TODO: Figure out GFX
+                let x = reg_vx;
+                let y = reg_vy;
+                let height = instruction & 0x000F;
+                let mut pixel: u8;
+                reg_vf = 0;
+
+                for y_line in 0..height {
+                    pixel = ram.memory[self.reg_i + y_line];
+                    for x_line in 0..8 {
+                        if (pixel & (0x80 >> x_line)) != 0 {
+                            if self.gfx[(x + x_line + ((y + y_line) * 64))] == 1 {
+                                reg_vf = 1;
+                            }
+                            self.gfx[x + x_line + ((y + y_line) * 64)] ^= 1;
+                        }
+                    }
+                }
+                self.draw_flag = true;
+                self.reg_pc += 2;
             },
             0xE000 => {
                 match instruction & 0x000F {
                     0x000E => {
                         // 0xEX9E: skips the next instruction if the key stored in VX is pressed
-                        // TODO: Figure out keyboard input
+                        if self.key[reg_vx] != 0 {
+                            self.reg_pc += 2;
+                        }
+                        self.reg_pc += 2;
                     },
                     0x0001 => {
                         // 0xEXA1: skips the next instruction if the key stored in VX isn't pressed
-                        // TODO: Figure out keyboard input
+                        if self.key[reg_vx] == 0 {
+                            self.reg_pc += 2;
+                        }
+                        self.reg_pc += 2;
                     },
                     _ => println!("Invalid opcode! {}", instruction)
                 }
@@ -245,7 +283,22 @@ impl Cpu {
                     },
                     0x000A => {
                         // 0xFX0A: wait for key press, store the value of key into VX
-                        // TODO: Figure out keyboard input
+                        // keypad logic
+                        let mut key_pressed = false;
+                        for i in 0..self.key.len() {
+                            if key[i] != 0 {
+                                key_pressed = true;
+                                reg_vx = i;
+                                break;
+                            }
+                        }
+
+                        // if no key is pressed, try again
+                        if !key_pressed {
+                            return;
+                        }
+
+                        self.reg_pc += 2;
                     },
                     0x0005 => {
                         match instruction & 0x00FF {
@@ -283,7 +336,8 @@ impl Cpu {
                     },
                     0x0009 => {
                         // 0xFX29: set I = location of sprite for digit VX
-                        // TODO: Figure out GFX
+                        self.reg_i = self.gfx[reg_vx];
+                        self.reg_pc += 2;
                     },
                     0x0003 => {
                         // 0xFX33: store BCD representation of VX in memory locations

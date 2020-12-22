@@ -84,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608576004435</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="most of the opcodes finished">
+      <created>1608647529804</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1608647529804</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,24 +112,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CPU and run instruction" />
     <MESSAGE value="updates gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="updates gitignore" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state width="1238" height="152" key="GridCell.Tab.0.bottom" timestamp="1608604462969">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="152" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
-    <state width="1238" height="152" key="GridCell.Tab.0.center" timestamp="1608604462969">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="152" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
-    <state width="1238" height="152" key="GridCell.Tab.0.left" timestamp="1608604462968">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="152" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1608604462968" />
-    <state width="1238" height="152" key="GridCell.Tab.0.right" timestamp="1608604462969">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="152" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
+    <MESSAGE value="most of the opcodes finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="most of the opcodes finished" />
   </component>
 </project>
