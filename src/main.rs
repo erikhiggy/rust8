@@ -79,7 +79,7 @@ impl Cpu {
         let reg_vy = self.reg_gpr[(instruction & 0x00F0) >> 4];
         let nnn = instruction & 0x0FFF;
         let nn = instruction & 0x00FF;
-        let reg_v0 = self.reg_gpr[0];
+        let reg_v0 = self.reg_gpr[0] as u16;
         let mut reg_vf = self.reg_gpr[0x000F];
 
         match instruction & 0xF000 {
@@ -229,7 +229,7 @@ impl Cpu {
                 // on a random number (Typically: 0 to 255) and NN
                 let mut rng = rand::thread_rng();
                 let rand_num: u8 = rng.gen();
-                reg_vx = rand_num & nn;
+                reg_vx = rand_num & nn as u8;
                 self.reg_pc += 2;
             },
             0xD000 => {
@@ -311,7 +311,7 @@ impl Cpu {
                                 // 0xFX55: store registers V0 -> VX in memory starting at
                                 // location I
                                 for x in 0..=self.reg_gpr.iter().position(|&val| val == reg_vx).unwrap() {
-                                    ram.write_byte(self.reg_i + x, self.reg_gpr[x])
+                                    ram.write_byte(self.reg_i + x as u16, self.reg_gpr[x])
                                 }
                             },
                             0x0065 => {
