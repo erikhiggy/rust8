@@ -36,7 +36,6 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
@@ -45,15 +44,14 @@
   </component>
   <component name="RunManager">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="command" value="run --package chip-8 --bin chip-8" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <option name="channel" value="DEFAULT" />
+      <option name="command" value="run --package chip-8 --bin chip-8" />
       <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
-      <option name="isRedirectInput" value="false" />
-      <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
@@ -63,7 +61,10 @@
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="version" value="2" />
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="" />
@@ -73,6 +74,7 @@
       <updated>1608554994283</updated>
       <workItem from="1608554995805" duration="1925000" />
       <workItem from="1608571244278" duration="6142000" />
+      <workItem from="1608601901195" duration="3784000" />
     </task>
     <task id="LOCAL-00001" summary="CPU and run instruction">
       <created>1608576004435</created>
@@ -85,22 +87,41 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CPU and run instruction" />
     <option name="LAST_COMMIT_MESSAGE" value="CPU and run instruction" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1238" height="152" key="GridCell.Tab.0.bottom" timestamp="1608604462969">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
+    <state width="1238" height="152" key="GridCell.Tab.0.center" timestamp="1608604462969">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
+    <state width="1238" height="152" key="GridCell.Tab.0.left" timestamp="1608604462968">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1608604462968" />
+    <state width="1238" height="152" key="GridCell.Tab.0.right" timestamp="1608604462969">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1608604462969" />
   </component>
 </project>
