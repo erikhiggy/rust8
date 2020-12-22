@@ -75,11 +75,11 @@ impl Cpu {
         let lo = ram.read_byte(self.reg_pc+1) as u16;
         let instruction: u16 = (hi << 8) | lo;
         // decode and execute the opcode
-        let reg_vx = self.reg_gpr[(instruction & 0x0F00) >> 8];
-        let reg_vy = self.reg_gpr[(instruction & 0x00F0) >> 4];
+        let mut reg_vx = self.reg_gpr[((instruction & 0x0F00) >> 8) as usize];
+        let mut reg_vy = self.reg_gpr[((instruction & 0x00F0) >> 4) as usize];
         let nnn = instruction & 0x0FFF;
-        let nn = instruction & 0x00FF;
-        let reg_v0 = self.reg_gpr[0] as u16;
+        let nn: u8 = (instruction & 0x00FF) as u8;
+        let mut reg_v0 = self.reg_gpr[0] as u16;
         let mut reg_vf = self.reg_gpr[0x000F];
 
         match instruction & 0xF000 {
@@ -92,7 +92,7 @@ impl Cpu {
                     // 0x00EE: return from subroutine
                     // restores program counter and then removes stack address
                     self.sp -= 1;
-                    self.reg_pc = self.stack[self.sp] as u16;
+                    self.reg_pc = self.stack[self.sp as usize] as u16;
                 },
                 _ => println!("Invalid opcode {}", instruction)
             },
@@ -102,7 +102,7 @@ impl Cpu {
             },
             0x2000 => {
                 // 0x2NNN: calls subroutine at NNN
-                self.stack[self.sp] = self.reg_pc;
+                self.stack[self.sp as usize] = self.reg_pc as u8;
                 self.sp += 1;
                 self.reg_pc = instruction & 0x0FFF;
             },
@@ -235,20 +235,20 @@ impl Cpu {
             0xD000 => {
                 // 0xDXYN: draws a sprite at coordinate (VX, VY), has a width of 8 pixels and
                 // a height of N + 1 pixels.
-                let x = reg_vx;
-                let y = reg_vy;
+                let x = reg_vx as u16;
+                let y = reg_vy as u16;
                 let height = instruction & 0x000F;
                 let mut pixel: u8;
                 reg_vf = 0;
 
                 for y_line in 0..height {
-                    pixel = ram.memory[self.reg_i + y_line];
+                    pixel = ram.memory[(self.reg_i + y_line) as usize];
                     for x_line in 0..8 {
                         if (pixel & (0x80 >> x_line)) != 0 {
-                            if self.gfx[(x + x_line + ((y + y_line) * 64))] == 1 {
+                            if self.gfx[(x + x_line as u16 + ((y + y_line) * 64)) as usize] == 1 {
                                 reg_vf = 1;
                             }
-                            self.gfx[x + x_line + ((y + y_line) * 64)] ^= 1;
+                            self.gfx[(x + x_line as u16 + ((y + y_line) * 64)) as usize] ^= 1;
                         }
                     }
                 }
@@ -259,14 +259,14 @@ impl Cpu {
                 match instruction & 0x000F {
                     0x000E => {
                         // 0xEX9E: skips the next instruction if the key stored in VX is pressed
-                        if self.key[reg_vx] != 0 {
+                        if self.key[reg_vx as usize] != 0 {
                             self.reg_pc += 2;
                         }
                         self.reg_pc += 2;
                     },
                     0x0001 => {
                         // 0xEXA1: skips the next instruction if the key stored in VX isn't pressed
-                        if self.key[reg_vx] == 0 {
+                        if self.key[reg_vx as usize] == 0 {
                             self.reg_pc += 2;
                         }
                         self.reg_pc += 2;
@@ -286,9 +286,9 @@ impl Cpu {
                         // keypad logic
                         let mut key_pressed = false;
                         for i in 0..self.key.len() {
-                            if key[i] != 0 {
+                            if self.key[i] != 0 {
                                 key_pressed = true;
-                                reg_vx = i;
+                                reg_vx = i as u8;
                                 break;
                             }
                         }
@@ -317,8 +317,8 @@ impl Cpu {
                             0x0065 => {
                                 // 0xFX65: read registers V0 -> Vx from memory starting at
                                 // location
-                                for x in self.reg_i..=ram.memory[self.reg_gpr.iter().position(|&s| s == reg_vx).unwrap()] {
-                                    ram.read_byte(ram.memory[x])
+                                for x in self.reg_i..=ram.memory[self.reg_gpr.iter().position(|&s| s == reg_vx).unwrap()] as u16 {
+                                    ram.read_byte(ram.memory[x as usize] as u16);
                                 }
                             },
                             _ => println!("Invalid opcode! {}", instruction)
@@ -331,20 +331,20 @@ impl Cpu {
                     },
                     0x000E => {
                         // 0xFX1E: set I = I + VX
-                        self.reg_i += reg_vx;
+                        self.reg_i += reg_vx as u16;
                         self.reg_pc += 2;
                     },
                     0x0009 => {
                         // 0xFX29: set I = location of sprite for digit VX
-                        self.reg_i = self.gfx[reg_vx];
+                        self.reg_i = self.gfx[reg_vx as usize] as u16;
                         self.reg_pc += 2;
                     },
                     0x0003 => {
                         // 0xFX33: store BCD representation of VX in memory locations
                         // I, I+1, I+2
-                        ram[self.reg_i] = reg_vx / 100;
-                        ram[self.reg_i + 1] = (reg_vx / 10) % 10;
-                        ram[self.reg_i + 2] = (reg_vx % 100) % 10;
+                        ram.memory[self.reg_i as usize] = reg_vx / 100;
+                        ram.memory[self.reg_i as usize + 1] = (reg_vx / 10) % 10;
+                        ram.memory[self.reg_i as usize + 2] = (reg_vx % 100) % 10;
                         self.reg_pc += 2;
                     },
                     _ => println!("Invalid opcode! {}", instruction)

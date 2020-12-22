@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="WIP - running instructions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,6 +119,26 @@
     <option name="LAST_COMMIT_MESSAGE" value="most of the opcodes finished" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="227" y="25" key="CommitChangelistDialog2" timestamp="1608668655425">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state x="227" y="25" key="CommitChangelistDialog2/0.25.1280.699@0.25.1280.699" timestamp="1608668655425" />
+    <state width="1238" height="152" key="GridCell.Tab.0.bottom" timestamp="1608668689563">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1608668689563" />
+    <state width="1238" height="152" key="GridCell.Tab.0.center" timestamp="1608668689563">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1608668689563" />
+    <state width="1238" height="152" key="GridCell.Tab.0.left" timestamp="1608668689562">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1608668689562" />
+    <state width="1238" height="152" key="GridCell.Tab.0.right" timestamp="1608668689563">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state width="1238" height="152" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1608668689563" />
     <state x="148" y="25" key="SettingsEditor" timestamp="1608666518585">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
