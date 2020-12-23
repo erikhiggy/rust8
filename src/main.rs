@@ -1,6 +1,13 @@
 use std::fs::File;
 use std::io::Read;
 use rand::Rng;
+use minifb::{
+    Key,
+    Window,
+    WindowOptions,
+    Scale
+};
+use rodio::Sink;
 
 fn main() {
     let mut file = File::open("data/invaders").unwrap();
@@ -10,14 +17,59 @@ fn main() {
     let mut chip8 = Chip8::new();
     chip8.load_rom(&data);
 
-    loop {
-        chip8.run_instruction()
+    // setup audio
+    let audio_device = rodio::default_output_device().unwrap();
+    let audio_sink = Sink::new(&audio_device);
+    let audio_source = rodio::source::SineWave::new(440);
+    audio_sink.append(audio_source);
+    audio_sink.pause();
+
+    let mut time_to_runloop = TIMER_DEFAULT;
+
+    let mut window = Window::new(
+        &format!("chip-8 rust"),
+        WIDTH,
+        HEIGHT,
+        WindowOptions {
+            scale: Scale::X8,
+            ..WindowOptions::default()
+        }
+    ).unwrap();
+
+    window.limit_update_rate(Some(std::time::Duration::from_micros(2083)));
+
+    chip8.cpu.handle_keypress(&window);
+
+    while window.is_open() &&  chip8.cpu.reg_pc as usize <= RAM_SIZE {
+        chip8.run_instruction();
+
+        // reset timers
+        if time_to_runloop == 0 {
+            if chip8.cpu.reg_dt > 0 {
+                chip8.cpu.reg_dt -= 1;
+            }
+            if chip8.cpu.reg_st > 0 {
+                audio_sink.play();
+                chip8.cpu.reg_st -= 1;
+            } else if chip8.cpu.reg_st == 0 {
+                audio_sink.pause();
+            }
+
+            window.update_with_buffer(&chip8.cpu.gfx, WIDTH, HEIGHT).unwrap();
+
+            time_to_runloop = TIMER_DEFAULT;
+        } else {
+            time_to_runloop -= 1;
+        }
     }
 }
 
 const NUM_GPR: usize = 16;
 const NUM_SP: usize = 2;
 const RAM_SIZE: usize = 4096;
+const WIDTH: usize = 64;
+const HEIGHT: usize = 32;
+const TIMER_DEFAULT: usize = 8;
 
 pub const PROGRAM_START_ADDR: u16 = 0x200;
 
@@ -43,13 +95,13 @@ struct Cpu {
     stack: [u8; 16],
 
     // 8 bit graphics (gfx) array
-    gfx: [u8; 64 * 32],
+    gfx: [u32; 64 * 32],
 
     // draw flag
     draw_flag: bool,
 
     // keyboard handling
-    key: [u8; 16]
+    keys: [u8; 16]
 
 }
 
@@ -64,9 +116,36 @@ impl Cpu {
             reg_dt: 0,
             reg_st: 0,
             gfx: [0; 64 * 32],
-            draw_flag: false,
-            key: [0; 16]
+            draw_flag: true,
+            keys: [0; 16]
         }
+    }
+
+    pub fn handle_keypress(&mut self, window: &Window) -> [u8; 16] {
+        window.get_keys().map(|keys_received| {
+            for k in keys_received {
+                match k {
+                    Key::Key1 => self.keys[0x1] = 1,
+                    Key::Key2 => self.keys[0x2] = 1,
+                    Key::Key3 => self.keys[0x3] = 1,
+                    Key::Key4 => self.keys[0xC] = 1,
+                    Key::Q => self.keys[0x4] = 1,
+                    Key::W => self.keys[0x5] = 1,
+                    Key::E => self.keys[0x6] = 1,
+                    Key::R => self.keys[0xD] = 1,
+                    Key::A => self.keys[0x7] = 1,
+                    Key::S => self.keys[0x8] = 1,
+                    Key::D => self.keys[0x9] = 1,
+                    Key::F => self.keys[0xE] = 1,
+                    Key::Z => self.keys[0xA] = 1,
+                    Key::X => self.keys[0x0] = 1,
+                    Key::C => self.keys[0xB] = 1,
+                    Key::V => self.keys[0xF] = 1,
+                    _ => () // noop
+                }
+            }
+        });
+        self.keys
     }
 
     pub fn run_instruction(&mut self, ram: &mut Ram) {
@@ -82,17 +161,24 @@ impl Cpu {
         let mut reg_v0 = self.reg_gpr[0] as u16;
         let mut reg_vf = self.reg_gpr[0x000F];
 
+        println!("instruction: {:#X}", instruction);
+
         match instruction & 0xF000 {
             0x0000 => match instruction & 0x000F {
                 0x0000 => {
                     // 0x00E0: clear screen
-                    // TODO: figure out how to clear screen
+                    for x in 0..2048 {
+                        self.gfx[x] = 0;
+                    }
+                    self.draw_flag = true;
+                    self.reg_pc += 2;
                 },
                 0x000E => {
                     // 0x00EE: return from subroutine
                     // restores program counter and then removes stack address
                     self.sp -= 1;
                     self.reg_pc = self.stack[self.sp as usize] as u16;
+                    self.reg_pc += 2;
                 },
                 _ => println!("Invalid opcode {}", instruction)
             },
@@ -259,14 +345,14 @@ impl Cpu {
                 match instruction & 0x000F {
                     0x000E => {
                         // 0xEX9E: skips the next instruction if the key stored in VX is pressed
-                        if self.key[reg_vx as usize] != 0 {
+                        if self.keys[reg_vx as usize] != 0 {
                             self.reg_pc += 2;
                         }
                         self.reg_pc += 2;
                     },
                     0x0001 => {
                         // 0xEXA1: skips the next instruction if the key stored in VX isn't pressed
-                        if self.key[reg_vx as usize] == 0 {
+                        if self.keys[reg_vx as usize] == 0 {
                             self.reg_pc += 2;
                         }
                         self.reg_pc += 2;
@@ -285,8 +371,8 @@ impl Cpu {
                         // 0xFX0A: wait for key press, store the value of key into VX
                         // keypad logic
                         let mut key_pressed = false;
-                        for i in 0..self.key.len() {
-                            if self.key[i] != 0 {
+                        for i in 0..self.keys.len() {
+                            if self.keys[i] != 0 {
                                 key_pressed = true;
                                 reg_vx = i as u8;
                                 break;
