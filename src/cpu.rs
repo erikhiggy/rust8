@@ -135,8 +135,6 @@ impl Cpu {
         let nn: u8 = (instruction & 0x00FF) as u8;
         let reg_v0 = self.reg_gpr[0] as u16;
 
-        // println!("instruction: {:#X}", instruction);
-
         match instruction & 0xF000 {
             0x0000 => match instruction & 0x000F {
                 0x0000 => {
@@ -157,7 +155,6 @@ impl Cpu {
             },
             0x1000 => {
                 // 0x1NNN: jumps to address NNN
-                // println!("{:#X}: Jumps to address {:#X}", instruction, nnn);
                 self.reg_pc = nnn;
             },
             0x2000 => {
@@ -321,13 +318,13 @@ impl Cpu {
             },
             0xE000 => {
                 match instruction & 0x000F {
-                    // 0x000E => {
-                    //     // 0xEX9E: skips the next instruction if the key stored in VX is pressed
-                    //     if self.keys[reg_vx as usize] != 0 {
-                    //         self.reg_pc += 2;
-                    //     }
-                    //     self.reg_pc += 2;
-                    // },
+                    0x000E => {
+                        // 0xEX9E: skips the next instruction if the key stored in VX is pressed
+                        if self.keys[reg_vx as usize] != 0 {
+                            self.reg_pc += 2;
+                        }
+                        self.reg_pc += 2;
+                    },
                     0x0001 => {
                         // 0xEXA1: skips the next instruction if the key stored in VX isn't pressed
                         if self.keys[reg_vx as usize] == 0 {
@@ -411,9 +408,6 @@ impl Cpu {
                         ram.write_byte(self.reg_i, reg_vx / 100);
                         ram.write_byte(self.reg_i + 1, (reg_vx / 10) % 10);
                         ram.write_byte(self.reg_i + 2, (reg_vx % 100) % 10);
-                        // ram.memory[self.reg_i as usize] = reg_vx / 100;
-                        // ram.memory[self.reg_i as usize + 1] = (reg_vx / 10) % 10;
-                        // ram.memory[self.reg_i as usize + 2] = (reg_vx % 100) % 10;
                         self.reg_pc += 2;
                     },
                     _ => println!("Invalid opcode! {:#X}", instruction)
