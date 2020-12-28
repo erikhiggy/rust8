@@ -65,7 +65,6 @@ fn main() {
 }
 
 const NUM_GPR: usize = 16;
-const NUM_SP: usize = 2;
 const RAM_SIZE: usize = 4096;
 const WIDTH: usize = 64;
 const HEIGHT: usize = 32;
@@ -99,9 +98,6 @@ struct Cpu {
     // 8 bit graphics (gfx) array
     gfx: [u32; 64 * 32],
 
-    // draw flag
-    draw_flag: bool,
-
     // keyboard handling
     keys: [u8; 16]
 
@@ -118,9 +114,24 @@ impl Cpu {
             reg_dt: 0,
             reg_st: 0,
             gfx: [PX_OFF; 64 * 32],
-            draw_flag: true,
             keys: [0; 16]
         }
+    }
+
+    pub fn get_reg_vx(&self, opcode: u16) -> u8 {
+        return self.reg_gpr[((opcode & 0x0F00) >> 8) as usize];
+    }
+
+    pub fn set_reg_vx(&mut self, opcode: u16, value: u8) {
+        self.reg_gpr[((opcode & 0x0F00) >> 8) as usize] = value;
+    }
+
+    pub fn get_reg_vy(&self, opcode: u16) -> u8 {
+        return self.reg_gpr[((opcode & 0x00F0) >> 4) as usize];
+    }
+
+    pub fn set_reg_vy(&mut self, opcode: u16, value: u8) {
+        self.reg_gpr[((opcode & 0x00F0) >> 4) as usize] = value;
     }
 
     pub fn handle_keypress(&mut self, window: &Window) -> [u8; 16] {
@@ -156,12 +167,11 @@ impl Cpu {
         let lo = ram.read_byte(self.reg_pc+1) as u16;
         let instruction: u16 = (hi << 8) | lo;
         // decode and execute the opcode
-        let mut reg_vx = self.reg_gpr[((instruction & 0x0F00) >> 8) as usize];
-        let mut reg_vy = self.reg_gpr[((instruction & 0x00F0) >> 4) as usize];
+        let reg_vx = self.get_reg_vx(instruction);
+        let reg_vy = self.get_reg_vy(instruction);
         let nnn = instruction & 0x0FFF;
         let nn: u8 = (instruction & 0x00FF) as u8;
-        let mut reg_v0 = self.reg_gpr[0] as u16;
-        let mut reg_vf = self.reg_gpr[0xF];
+        let reg_v0 = self.reg_gpr[0] as u16;
 
         // println!("instruction: {:#X}", instruction);
 
@@ -169,8 +179,8 @@ impl Cpu {
             0x0000 => match instruction & 0x000F {
                 0x0000 => {
                     // 0x00E0: clear screen
-                    for x in 0..2048 {
-                        self.gfx[x] = PX_OFF;
+                    for index in 0..2048 {
+                        self.gfx[index] = PX_OFF;
                     }
                     self.reg_pc += 2;
                 },
@@ -217,45 +227,45 @@ impl Cpu {
             },
             0x6000 => {
                 // 0x6XNN: sets VX to NN
-                self.reg_gpr[((instruction & 0x0F00) >> 8) as usize] = nn;
+                self.set_reg_vx(instruction, nn);
                 self.reg_pc += 2;
             },
             0x7000 => {
                 // 0x7XNN: Adds NN to VX (carry flag is not changed)
-                self.reg_gpr[((instruction & 0x0F00) >> 8) as usize] += nn;
+                self.set_reg_vx(instruction, reg_vx + nn);
                 self.reg_pc += 2;
             },
             0x8000 => {
                 match instruction & 0x000F {
                     0x0000 => {
                         // 0x8XY0: sets VX = VY
-                        reg_vx = reg_vy;
+                        self.set_reg_vx(instruction, reg_vy);
                         self.reg_pc += 2;
                     },
                     0x0001 => {
                         // 0x8XY1: bitwise OR -> VX | VY, store in VX
-                        reg_vx |= reg_vy;
+                        self.set_reg_vx(instruction, reg_vx | reg_vy);
                         self.reg_pc += 2;
                     },
                     0x0002 => {
                         // 0x8XY2: bitwise AND -> VX & VY
-                        reg_vx &= reg_vy;
+                        self.set_reg_vx(instruction, reg_vx & reg_vy);
                         self.reg_pc += 2;
                     },
                     0x0003 => {
                         // 0x8XY3: XOR -> VX XOR VY
-                        reg_vx ^= reg_vy;
+                        self.set_reg_vx(instruction, reg_vx ^ reg_vy);
                         self.reg_pc += 2;
                     },
                     0x0004 => {
                         // 0x8XY4: adds VY to VX. VF is set to 1 when there's a carry
                         // and a 0 when when there isn't
                         if reg_vy > (0x00FF - reg_vx) {
-                            reg_vf = 1;
+                            self.reg_gpr[0xF] = 1;
                         } else {
-                            reg_vf = 0;
+                            self.reg_gpr[0xF] = 0;
                         }
-                        reg_vx += reg_vy;
+                        self.set_reg_vx(instruction, reg_vx + reg_vy);
                         self.reg_pc += 2;
 
                     },
@@ -263,34 +273,34 @@ impl Cpu {
                         // 0x8XY5: subtracts VY from VX. VF is set to 1 when there's a carry
                         // and a 0 when when there isn't
                          if reg_vx > reg_vy {
-                             reg_vf = 1;
+                             self.reg_gpr[0xF] = 1;
                          } else {
-                             reg_vf = 0;
+                             self.reg_gpr[0xF] = 0;
                          }
-                        reg_vx -= reg_vy;
+                        self.set_reg_vx(instruction, reg_vx - reg_vy);
                         self.reg_pc += 2;
                     },
                     0x0006 => {
                         // 0x8XY6: stores the LSB of VX in VF and then shifts VX to the right by 1
-                        reg_vf = reg_vx & 1;
-                        reg_vx = reg_vx >> 1;
+                        self.reg_gpr[0xF] = reg_vx & 1;
+                        self.set_reg_vx(instruction, reg_vx >> 1);
                         self.reg_pc += 2;
                     },
                     0x0007 => {
                         // 0x8XY7: sets VX to VY minus VX.
                         // VF is set to 0 when there's a borrow, and 1 when there isn't
                         if reg_vy > reg_vx {
-                            reg_vf = 1;
+                            self.reg_gpr[0xF] = 1;
                         } else {
-                            reg_vf = 0;
+                            self.reg_gpr[0xF] = 0;
                         }
-                        reg_vy -= reg_vx;
+                        self.set_reg_vy(instruction, reg_vy - reg_vx);
                         self.reg_pc += 2;
                     },
                     0x000E => {
                         // 0x8XYE: stores the MSB of VX in VF and then shifts VX to the left by 1
-                        reg_vf = (reg_vx >> 3) & 1;
-                        reg_vx = reg_vx << 1;
+                        self.reg_gpr[0xF] = (reg_vx >> 3) & 1;
+                        self.set_reg_vx(instruction, reg_vx << 1);
                         self.reg_pc += 2;
                     },
                     _ => println!("Invalid opcode {}", instruction)
@@ -317,7 +327,7 @@ impl Cpu {
                 // on a random number (Typically: 0 to 255) and NN
                 let mut rng = rand::thread_rng();
                 let rand_num: u8 = rng.gen();
-                reg_vx = rand_num & nn as u8;
+                self.set_reg_vx(instruction, rand_num & nn as u8);
                 self.reg_pc += 2;
             },
             0xD000 => {
@@ -369,7 +379,7 @@ impl Cpu {
                 match instruction & 0x000F {
                     0x0007 => {
                         // 0xFX07: the value of DT is placed in VX
-                        reg_vx = self.reg_dt;
+                        self.set_reg_vx(instruction, self.reg_dt);
                         self.reg_pc += 2;
                     },
                     0x000A => {
@@ -379,7 +389,7 @@ impl Cpu {
                         for i in 0..self.keys.len() {
                             if self.keys[i] != 0 {
                                 key_pressed = true;
-                                reg_vx = i as u8;
+                                self.set_reg_vx(instruction, i as u8);
                                 break;
                             }
                         }
