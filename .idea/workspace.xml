@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/data/keypad_test" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/pong" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/test_opcode" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
@@ -37,11 +40,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/data" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="org.rust.disableDetachedFileInspectionC:/Users/higgi/WebstormProjects/chip-8/src/CPU.rs" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
@@ -108,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609119980487</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactored the getting and setting of the registers">
+      <created>1609121474915</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1609121474915</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -133,40 +149,41 @@
     <MESSAGE value="most of the opcodes finished" />
     <MESSAGE value="fixed compile time errors" />
     <MESSAGE value="IBM test passed!" />
-    <option name="LAST_COMMIT_MESSAGE" value="IBM test passed!" />
+    <MESSAGE value="refactored the getting and setting of the registers" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored the getting and setting of the registers" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="173" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1609118368233">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
     <state x="361" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.25.1280.699@0.25.1280.699" timestamp="1609118368233" />
-    <state x="227" y="25" key="CommitChangelistDialog2" timestamp="1609119980194">
+    <state x="227" y="25" key="CommitChangelistDialog2" timestamp="1609121474717">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state x="227" y="25" key="CommitChangelistDialog2/0.25.1280.699@0.25.1280.699" timestamp="1609119980194" />
-    <state width="1238" height="212" key="GridCell.Tab.0.bottom" timestamp="1609121418939">
+    <state x="227" y="25" key="CommitChangelistDialog2/0.25.1280.699@0.25.1280.699" timestamp="1609121474717" />
+    <state width="1238" height="212" key="GridCell.Tab.0.bottom" timestamp="1609124277379">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1609121418939" />
-    <state width="1238" height="212" key="GridCell.Tab.0.center" timestamp="1609121418939">
+    <state width="1238" height="212" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1609124277379" />
+    <state width="1238" height="212" key="GridCell.Tab.0.center" timestamp="1609124277378">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1609121418939" />
-    <state width="1238" height="212" key="GridCell.Tab.0.left" timestamp="1609121418938">
+    <state width="1238" height="212" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1609124277378" />
+    <state width="1238" height="212" key="GridCell.Tab.0.left" timestamp="1609124277377">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1609121418938" />
-    <state width="1238" height="212" key="GridCell.Tab.0.right" timestamp="1609121418939">
+    <state width="1238" height="212" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1609124277377" />
+    <state width="1238" height="212" key="GridCell.Tab.0.right" timestamp="1609124277378">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1609121418939" />
+    <state width="1238" height="212" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1609124277378" />
     <state x="148" y="25" key="SettingsEditor" timestamp="1608666518585">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
     <state x="148" y="25" key="SettingsEditor/0.25.1280.699@0.25.1280.699" timestamp="1608666518585" />
-    <state x="240" y="109" key="Vcs.Push.Dialog.v2" timestamp="1609119983588">
+    <state x="240" y="109" key="Vcs.Push.Dialog.v2" timestamp="1609124301574">
       <screen x="0" y="25" width="1280" height="699" />
     </state>
-    <state x="240" y="109" key="Vcs.Push.Dialog.v2/0.25.1280.699@0.25.1280.699" timestamp="1609119983588" />
+    <state x="240" y="109" key="Vcs.Push.Dialog.v2/0.25.1280.699@0.25.1280.699" timestamp="1609124301574" />
   </component>
 </project>

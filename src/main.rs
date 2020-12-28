@@ -10,7 +10,7 @@ use minifb::{
 use rodio::Sink;
 
 fn main() {
-    let mut file = File::open("data/IBMLogo").unwrap();
+    let mut file = File::open("data/breakout").unwrap();
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data);
 
@@ -38,7 +38,7 @@ fn main() {
 
     window.limit_update_rate(Some(std::time::Duration::from_micros(2083)));
 
-    // chip8.cpu.handle_keypress(&window);
+    chip8.cpu.handle_keypress(&window);
 
     while window.is_open() &&  chip8.cpu.reg_pc as usize <= RAM_SIZE {
         chip8.run_instruction();
@@ -232,7 +232,7 @@ impl Cpu {
             },
             0x7000 => {
                 // 0x7XNN: Adds NN to VX (carry flag is not changed)
-                self.set_reg_vx(instruction, reg_vx + nn);
+                self.set_reg_vx(instruction, reg_vx.wrapping_add(nn));
                 self.reg_pc += 2;
             },
             0x8000 => {
@@ -372,7 +372,7 @@ impl Cpu {
                         }
                         self.reg_pc += 2;
                     },
-                    _ => println!("Invalid opcode! {}", instruction)
+                    _ => println!("Invalid opcode! {:#X}", instruction)
                 }
             },
             0xF000 => {
@@ -389,6 +389,7 @@ impl Cpu {
                         for i in 0..self.keys.len() {
                             if self.keys[i] != 0 {
                                 key_pressed = true;
+                                println!("Key pressed!");
                                 self.set_reg_vx(instruction, i as u8);
                                 break;
                             }
@@ -422,7 +423,7 @@ impl Cpu {
                                     ram.read_byte(ram.memory[x as usize] as u16);
                                 }
                             },
-                            _ => println!("Invalid opcode! {}", instruction)
+                            _ => println!("Invalid opcode! {:#X}", instruction)
                         }
                     },
                     0x0008 => {
@@ -448,10 +449,10 @@ impl Cpu {
                         ram.memory[self.reg_i as usize + 2] = (reg_vx % 100) % 10;
                         self.reg_pc += 2;
                     },
-                    _ => println!("Invalid opcode! {}", instruction)
+                    _ => println!("Invalid opcode! {:#X}", instruction)
                 }
             }
-            _ => println!("Invalid opcode! {}", instruction)
+            _ => println!("Invalid opcode! {:#X}", instruction)
         }
     }
 }
