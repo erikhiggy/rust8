@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/data/keypad_test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/pong" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/test_opcode" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/chip8.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/cpu.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ram.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
@@ -54,14 +54,15 @@
   </component>
   <component name="RunManager">
     <configuration name="Run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="channel" value="DEFAULT" />
       <option name="command" value="run --package chip-8 --bin chip-8" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
       <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
       <method v="2">
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
@@ -74,7 +75,7 @@
   <component name="ServiceViewManager">
     <option name="showServicesTree" value="false" />
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -135,13 +136,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CPU and run instruction" />
@@ -151,39 +151,5 @@
     <MESSAGE value="IBM test passed!" />
     <MESSAGE value="refactored the getting and setting of the registers" />
     <option name="LAST_COMMIT_MESSAGE" value="refactored the getting and setting of the registers" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="361" y="173" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1609118368233">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state x="361" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.25.1280.699@0.25.1280.699" timestamp="1609118368233" />
-    <state x="227" y="25" key="CommitChangelistDialog2" timestamp="1609121474717">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state x="227" y="25" key="CommitChangelistDialog2/0.25.1280.699@0.25.1280.699" timestamp="1609121474717" />
-    <state width="1238" height="212" key="GridCell.Tab.0.bottom" timestamp="1609124277379">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.bottom/0.25.1280.699@0.25.1280.699" timestamp="1609124277379" />
-    <state width="1238" height="212" key="GridCell.Tab.0.center" timestamp="1609124277378">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.center/0.25.1280.699@0.25.1280.699" timestamp="1609124277378" />
-    <state width="1238" height="212" key="GridCell.Tab.0.left" timestamp="1609124277377">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.left/0.25.1280.699@0.25.1280.699" timestamp="1609124277377" />
-    <state width="1238" height="212" key="GridCell.Tab.0.right" timestamp="1609124277378">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state width="1238" height="212" key="GridCell.Tab.0.right/0.25.1280.699@0.25.1280.699" timestamp="1609124277378" />
-    <state x="148" y="25" key="SettingsEditor" timestamp="1608666518585">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state x="148" y="25" key="SettingsEditor/0.25.1280.699@0.25.1280.699" timestamp="1608666518585" />
-    <state x="240" y="109" key="Vcs.Push.Dialog.v2" timestamp="1609124301574">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state x="240" y="109" key="Vcs.Push.Dialog.v2/0.25.1280.699@0.25.1280.699" timestamp="1609124301574" />
   </component>
 </project>
