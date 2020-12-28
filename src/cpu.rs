@@ -96,6 +96,7 @@ impl Cpu {
     }
 
     pub fn handle_keypress(&mut self, window: &Window) -> [u8; 16] {
+        self.keys = [0; 16];
         window.get_keys().map(|keys_received| {
             for k in keys_received {
                 match k {
@@ -226,7 +227,7 @@ impl Cpu {
                         } else {
                             self.reg_gpr[0xF] = 0;
                         }
-                        self.set_reg_vx(instruction, reg_vx + reg_vy);
+                        self.set_reg_vx(instruction, reg_vx.wrapping_add(reg_vy));
                         self.reg_pc += 2;
 
                     },
@@ -351,7 +352,6 @@ impl Cpu {
                         for i in 0..self.keys.len() {
                             if self.keys[i] != 0 {
                                 key_pressed = true;
-                                println!("Key pressed!");
                                 self.set_reg_vx(instruction, i as u8);
                                 break;
                             }

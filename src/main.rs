@@ -60,10 +60,10 @@ fn main() {
 
     window.limit_update_rate(Some(std::time::Duration::from_micros(2083)));
 
-    cpu.handle_keypress(&window);
-
     while window.is_open() && (cpu.reg_pc() as usize) <= RAM_SIZE {
         cpu.run_instruction(&mut ram);
+
+        cpu.handle_keypress(&window);
 
         // reset timers
         if runloop_time == 0 {

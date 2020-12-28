@@ -4,11 +4,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/chip8.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/cpu.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ram.rs" afterDir="false" />
+    <list default="true" id="fe0cbf23-6f1f-483b-8e8e-5dad3c43195d" name="Default Changelist" comment="refactors into files and fixes warnings">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cpu.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/cpu.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609121474915</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="refactors into files and fixes warnings">
+      <created>1609160657022</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1609160657022</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,6 +155,7 @@
     <MESSAGE value="fixed compile time errors" />
     <MESSAGE value="IBM test passed!" />
     <MESSAGE value="refactored the getting and setting of the registers" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored the getting and setting of the registers" />
+    <MESSAGE value="refactors into files and fixes warnings" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactors into files and fixes warnings" />
   </component>
 </project>
