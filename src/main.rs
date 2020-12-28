@@ -10,7 +10,7 @@ use minifb::{
 use rodio::Sink;
 
 fn main() {
-    let mut file = File::open("data/invaders").unwrap();
+    let mut file = File::open("data/IBMLogo").unwrap();
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data);
 
@@ -38,7 +38,7 @@ fn main() {
 
     window.limit_update_rate(Some(std::time::Duration::from_micros(2083)));
 
-    chip8.cpu.handle_keypress(&window);
+    // chip8.cpu.handle_keypress(&window);
 
     while window.is_open() &&  chip8.cpu.reg_pc as usize <= RAM_SIZE {
         chip8.run_instruction();
@@ -70,6 +70,8 @@ const RAM_SIZE: usize = 4096;
 const WIDTH: usize = 64;
 const HEIGHT: usize = 32;
 const TIMER_DEFAULT: usize = 8;
+const PX_OFF: u32 = 0;
+const PX_ON: u32 = 0xFFFFFF;
 
 pub const PROGRAM_START_ADDR: u16 = 0x200;
 
@@ -115,7 +117,7 @@ impl Cpu {
             stack: [0; 16],
             reg_dt: 0,
             reg_st: 0,
-            gfx: [0; 64 * 32],
+            gfx: [PX_OFF; 64 * 32],
             draw_flag: true,
             keys: [0; 16]
         }
@@ -159,18 +161,17 @@ impl Cpu {
         let nnn = instruction & 0x0FFF;
         let nn: u8 = (instruction & 0x00FF) as u8;
         let mut reg_v0 = self.reg_gpr[0] as u16;
-        let mut reg_vf = self.reg_gpr[0x000F];
+        let mut reg_vf = self.reg_gpr[0xF];
 
-        println!("instruction: {:#X}", instruction);
+        // println!("instruction: {:#X}", instruction);
 
         match instruction & 0xF000 {
             0x0000 => match instruction & 0x000F {
                 0x0000 => {
                     // 0x00E0: clear screen
                     for x in 0..2048 {
-                        self.gfx[x] = 0;
+                        self.gfx[x] = PX_OFF;
                     }
-                    self.draw_flag = true;
                     self.reg_pc += 2;
                 },
                 0x000E => {
@@ -184,6 +185,7 @@ impl Cpu {
             },
             0x1000 => {
                 // 0x1NNN: jumps to address NNN
+                // println!("{:#X}: Jumps to address {:#X}", instruction, nnn);
                 self.reg_pc = nnn;
             },
             0x2000 => {
@@ -215,12 +217,12 @@ impl Cpu {
             },
             0x6000 => {
                 // 0x6XNN: sets VX to NN
-                reg_vx = nn;
+                self.reg_gpr[((instruction & 0x0F00) >> 8) as usize] = nn;
                 self.reg_pc += 2;
             },
             0x7000 => {
                 // 0x7XNN: Adds NN to VX (carry flag is not changed)
-                reg_vx += nn;
+                self.reg_gpr[((instruction & 0x0F00) >> 8) as usize] += nn;
                 self.reg_pc += 2;
             },
             0x8000 => {
@@ -321,35 +323,38 @@ impl Cpu {
             0xD000 => {
                 // 0xDXYN: draws a sprite at coordinate (VX, VY), has a width of 8 pixels and
                 // a height of N + 1 pixels.
-                let x = reg_vx as u16;
-                let y = reg_vy as u16;
-                let height = instruction & 0x000F;
+                let x = reg_vx;
+                let y = reg_vy;
+                let height = (instruction & 0x000F) as u8;
                 let mut pixel: u8;
-                reg_vf = 0;
+                // set VF to 0
+                self.reg_gpr[0xF] = 0;
 
                 for y_line in 0..height {
-                    pixel = ram.memory[(self.reg_i + y_line) as usize];
+                    // get one byte of sprite data from the mem address in the i register
+                    pixel = ram.memory[(self.reg_i + y_line as u16) as usize];
                     for x_line in 0..8 {
-                        if (pixel & (0x80 >> x_line)) != 0 {
-                            if self.gfx[(x + x_line as u16 + ((y + y_line) * 64)) as usize] == 1 {
-                                reg_vf = 1;
+                        if (pixel & (0x0080 >> x_line)) != 0 {
+                            let pos_x: u32 = (x as u32 + x_line as u32) % WIDTH as u32;
+                            let pos_y: u32 = (y as u32 + y_line as u32) % HEIGHT as u32;
+                            if self.gfx[(pos_x + (pos_y * 64 as u32)) as usize] == PX_ON {
+                                self.reg_gpr[0xF] = 1;
                             }
-                            self.gfx[(x + x_line as u16 + ((y + y_line) * 64)) as usize] ^= 1;
+                            self.gfx[(pos_x + (pos_y * 64 as u32)) as usize] ^= PX_ON;
                         }
                     }
                 }
-                self.draw_flag = true;
                 self.reg_pc += 2;
             },
             0xE000 => {
                 match instruction & 0x000F {
-                    0x000E => {
-                        // 0xEX9E: skips the next instruction if the key stored in VX is pressed
-                        if self.keys[reg_vx as usize] != 0 {
-                            self.reg_pc += 2;
-                        }
-                        self.reg_pc += 2;
-                    },
+                    // 0x000E => {
+                    //     // 0xEX9E: skips the next instruction if the key stored in VX is pressed
+                    //     if self.keys[reg_vx as usize] != 0 {
+                    //         self.reg_pc += 2;
+                    //     }
+                    //     self.reg_pc += 2;
+                    // },
                     0x0001 => {
                         // 0xEXA1: skips the next instruction if the key stored in VX isn't pressed
                         if self.keys[reg_vx as usize] == 0 {
